@@ -340,7 +340,7 @@ render(siteBoardElement, createSortTemplate(), `afterbegin`);
 
 render(siteTaskListElement, createEditCardTemplate(), `beforeend`);
 
-for(let i = 0; i < CARDS_NUMBER; i++) {
+for (let i = 0; i < CARDS_NUMBER; i++) {
   render(siteTaskListElement, createCardTemplate(), `beforeend`);
 }
 
