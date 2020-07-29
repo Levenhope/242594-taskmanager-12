@@ -1,5 +1,7 @@
 "use strict";
 
+const CARDS_NUMBER = 3;
+
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
@@ -338,9 +340,8 @@ render(siteBoardElement, createSortTemplate(), `afterbegin`);
 
 render(siteTaskListElement, createEditCardTemplate(), `beforeend`);
 
-render(siteTaskListElement, createCardTemplate(), `beforeend`);
-render(siteTaskListElement, createCardTemplate(), `beforeend`);
-render(siteTaskListElement, createCardTemplate(), `beforeend`);
-
+for(let i = 0; i < CARDS_NUMBER; i++) {
+  render(siteTaskListElement, createCardTemplate(), `beforeend`);
+}
 
 render(siteBoardElement, createLoadBtnTemplate(), `beforeend`);
