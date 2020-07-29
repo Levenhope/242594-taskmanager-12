@@ -4,7 +4,7 @@ const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
 const createMainMenuTemplate = () => {
-  return(
+  return (
     `<section class="control__btn-wrap">
       <input
         type="radio"
@@ -33,7 +33,7 @@ const createMainMenuTemplate = () => {
 };
 
 const createFilterTemplate = () => {
-  return(
+  return (
     `<section class="main__filter filter container">
       <input
         type="radio"
@@ -85,13 +85,13 @@ const createFilterTemplate = () => {
 };
 
 const createBoardTemplate = () => {
-  return(
+  return (
     `<section class="board container"><div class="board__tasks"></div></section>`
   );
 };
 
 const createSortTemplate = () => {
-  return(
+  return (
     `<div class="board__filter-list">
       <a href="#" class="board__filter" data-sort-type="default">SORT BY DEFAULT</a>
       <a href="#" class="board__filter" data-sort-type="date-up">SORT BY DATE up</a>
@@ -101,7 +101,7 @@ const createSortTemplate = () => {
 };
 
 const createEditCardTemplate = () => {
-  return(
+  return (
     `<article class="card card--edit card--yellow card--repeat">
       <form class="card__form" method="get">
         <div class="card__inner">
@@ -269,7 +269,7 @@ const createEditCardTemplate = () => {
 };
 
 const createCardTemplate = () => {
-  return(
+  return (
     `<article class="card card--black">
       <div class="card__form">
         <div class="card__inner">
@@ -317,7 +317,7 @@ const createCardTemplate = () => {
 };
 
 const createLoadBtnTemplate = () => {
-  return(
+  return (
     `<button class="load-more" type="button">load more</button>`
   );
 };
