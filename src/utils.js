@@ -31,3 +31,13 @@ export const isTaskExpired = (dueDate) => {
 export const isTaskRepeating = (repeatingDays) => {
   return Object.values(repeatingDays).some(Boolean);
 };
+
+export const isTaskExpiringToday = (dueDate) => {
+  if (dueDate === null) {
+    return false;
+  }
+
+  const currentDate = getCurrentDate();
+
+  return currentDate.getTime() === dueDate.getTime();
+};

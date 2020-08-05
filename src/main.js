@@ -11,10 +11,12 @@ import {createCardTemplate} from "./view/card.js";
 import {createLoadButtonTemplate} from "./view/load-button.js";
 import {generateCard} from "./mock/card.js";
 import {getRandomInteger} from "./utils.js";
+import {generateFilter} from "./mock/filter.js";
 
 const CARDS_NUMBER = getRandomInteger(0, 20);
 
 const cards = new Array(CARDS_NUMBER).fill().map(generateCard);
+const filters = generateFilter(cards);
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
@@ -24,7 +26,7 @@ const render = (container, template, place) => {
 };
 
 render(siteHeaderElement, createMainMenuTemplate(), `beforeend`);
-render(siteHeaderElement, createFilterTemplate(), `afterend`);
+render(siteHeaderElement, createFilterTemplate(filters), `afterend`);
 
 render(siteMainElement, createBoardTemplate(), `beforeend`);
 
