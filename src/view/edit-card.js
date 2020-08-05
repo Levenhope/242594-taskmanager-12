@@ -120,7 +120,7 @@ export const createEditCardTemplate = (card) => {
                       id="repeat-su-4"
                       name="repeat"
                       value="su"
-                      ${ repeatingDays.su ? `checked`: ``}
+                      ${repeatingDays.su ? `checked` : ``}
                     />
                     <label class="card__repeat-day" for="repeat-su-4">su</label>
                   </div>
