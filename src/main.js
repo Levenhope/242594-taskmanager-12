@@ -37,7 +37,7 @@ if (CARDS_NUMBER > 0) {
   const siteTaskListElement = siteBoardElement.querySelector(`.board__tasks`);
   render(siteTaskListElement, createEditCardTemplate(cards[0]), `beforeend`);
 
-  for (let i = 0; i < CARDS_NUMBER; i++) {
+  for (let i = 1; i < CARDS_NUMBER; i++) {
     render(siteTaskListElement, createCardTemplate(cards[i]), `beforeend`);
   }
 

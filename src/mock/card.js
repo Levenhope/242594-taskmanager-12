@@ -49,22 +49,23 @@ const getRandomColor = () => {
 };
 
 export const generateCard = () => {
+  const dueDate = generateDate();
+  const repeatingDays = dueDate === null
+    ? generateRepeatingDays()
+    : {
+      mo: false,
+      tu: false,
+      we: false,
+      th: false,
+      fr: false,
+      sa: false,
+      su: false
+    };
+
   return {
     description: generateDescription(),
-    dueDate: generateDate(),
-    repeatingDays() {
-      return this.dueDate === null
-        ? generateRepeatingDays()
-        : {
-          mo: false,
-          tu: false,
-          we: false,
-          th: false,
-          fr: false,
-          sa: false,
-          su: false
-        };
-    },
+    dueDate,
+    repeatingDays,
     color: getRandomColor(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     isArchive: Boolean(getRandomInteger(0, 1))
