@@ -1,17 +1,5 @@
-import {COLORS} from "../const.js";
+import {COLORS, DESCRIPTIONS, MAX_DAYS_GAP} from "../const.js";
 import {getRandomInteger} from "../utils.js";
-
-const generateDescription = () => {
-  const descriptions = [
-    `Изучить теорию`,
-    `Сделать домашку`,
-    `Пройти интенсив на соточку`
-  ];
-
-  const randomIndex = getRandomInteger(0, descriptions.length - 1);
-
-  return descriptions[randomIndex];
-};
 
 const generateDate = () => {
   const isDate = Boolean(getRandomInteger(0, 1));
@@ -19,9 +7,7 @@ const generateDate = () => {
   if (!isDate) {
     return null;
   }
-
-  const maxDaysGap = 7;
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+  const daysGap = getRandomInteger(-MAX_DAYS_GAP, MAX_DAYS_GAP);
   const currentDate = new Date();
 
   currentDate.setHours(23, 59, 59, 999);
@@ -42,14 +28,10 @@ const generateRepeatingDays = () => {
   };
 };
 
-const getRandomColor = () => {
-  const randomIndex = getRandomInteger(0, COLORS.length - 1);
-
-  return COLORS[randomIndex];
-};
-
 export const generateCard = () => {
+  const description = DESCRIPTIONS[getRandomInteger(0, DESCRIPTIONS.length - 1)];
   const dueDate = generateDate();
+  const color = COLORS[getRandomInteger(0, COLORS.length - 1)];
   const repeatingDays = dueDate === null
     ? generateRepeatingDays()
     : {
@@ -63,10 +45,10 @@ export const generateCard = () => {
     };
 
   return {
-    description: generateDescription(),
+    description,
     dueDate,
     repeatingDays,
-    color: getRandomColor(),
+    color,
     isFavorite: Boolean(getRandomInteger(0, 1)),
     isArchive: Boolean(getRandomInteger(0, 1))
   };

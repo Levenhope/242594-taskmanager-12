@@ -7,36 +7,23 @@ export const createCardTemplate = (card) => {
     ? humanizeTaskDueDate(dueDate)
     : ``;
 
-  const deadlineClassName = isTaskExpired(dueDate)
-    ? `card--deadline`
-    : ``;
-
-  const repeatClassName = isTaskRepeating(repeatingDays)
-    ? `card--repeat`
-    : ``;
-
-  const archiveButtonState = isArchive
-    ? `card__btn--disabled`
-    : ``;
-
-  const favoriteButtonState = isFavorite
-    ? `card__btn--disabled`
-    : ``;
-
   return (
-    `<article class="card card--${color} ${deadlineClassName} ${repeatClassName}">
+    `<article class="card card--${color}
+              ${isTaskExpired(dueDate) ? `card--deadline` : ``}
+              ${isTaskRepeating(repeatingDays) ? `card--repeat` : ``}
+     ">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
             <button type="button" class="card__btn card__btn--edit">
               edit
             </button>
-            <button type="button" class="card__btn card__btn--archive ${archiveButtonState}">
+            <button type="button" class="card__btn card__btn--archive ${isArchive ? `card__btn--disabled` : ``}">
               archive
             </button>
             <button
               type="button"
-              class="card__btn card__btn--favorites ${favoriteButtonState}"
+              class="card__btn card__btn--favorites ${isFavorite ? `card__btn--disabled` : ``}"
             >
               favorites
             </button>
