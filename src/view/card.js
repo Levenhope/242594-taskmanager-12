@@ -3,10 +3,6 @@ import {humanizeTaskDueDate, isTaskExpired, isTaskRepeating} from "../utils.js";
 export const createCardTemplate = (card) => {
   const {color, description, dueDate, repeatingDays, isFavorite, isArchive} = card;
 
-  const date = dueDate !== null
-    ? humanizeTaskDueDate(dueDate)
-    : ``;
-
   return (
     `<article class="card card--${color}
               ${isTaskExpired(dueDate) ? `card--deadline` : ``}
@@ -44,7 +40,7 @@ export const createCardTemplate = (card) => {
               <div class="card__dates">
                 <div class="card__date-deadline">
                   <p class="card__input-deadline-wrap">
-                    <span class="card__date">${date}</span>
+                    <span class="card__date">${dueDate !== null ? humanizeTaskDueDate(dueDate) : ``}</span>
                   </p>
                 </div>
               </div>

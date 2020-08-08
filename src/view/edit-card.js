@@ -3,18 +3,6 @@ import {humanizeTaskDueDate, isTaskRepeating} from "../utils.js";
 export const createEditCardTemplate = (card) => {
   const {color, description, dueDate, repeatingDays} = card;
 
-  const date = dueDate !== null
-    ? humanizeTaskDueDate(dueDate)
-    : ``;
-
-  const isDateExist = dueDate !== null
-    ? `YES`
-    : `NO`;
-
-  const isRepeatingDaysExist = isTaskRepeating(repeatingDays)
-    ? `YES`
-    : `NO`;
-
   return (
     `<article class="card card--edit card--${color}">
       <form class="card__form" method="get">
@@ -39,7 +27,7 @@ export const createEditCardTemplate = (card) => {
             <div class="card__details">
               <div class="card__dates">
                 <button class="card__date-deadline-toggle" type="button">
-                  date: <span class="card__date-status">${isDateExist}</span>
+                  date: <span class="card__date-status">${dueDate !== null ? `YES` : `NO`}</span>
                 </button>
                 
                 <fieldset class="card__date-deadline" ${dueDate !== null ? `` : `style="display: none"`}>
@@ -49,13 +37,13 @@ export const createEditCardTemplate = (card) => {
                     type="text"
                     placeholder=""
                     name="date"
-                    value="${date}"
+                    value="${dueDate !== null ? humanizeTaskDueDate(dueDate) : ``}"
                   />
                   </label>
                   </fieldset>
 
                 <button class="card__repeat-toggle" type="button">
-                  repeat:<span class="card__repeat-status">${isRepeatingDaysExist}</span>
+                  repeat:<span class="card__repeat-status">${isTaskRepeating(repeatingDays) ? `YES` : `NO`}</span>
                 </button>
                 
                 <fieldset class="card__repeat-days" ${isTaskRepeating(repeatingDays) ? `` : `style="display: none"`}>
