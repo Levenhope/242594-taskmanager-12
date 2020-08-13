@@ -3,7 +3,7 @@ export const RenderPosition = {
   beforeEnd: `beforeend`
 };
 
-export const renderElement = (container, element, place) => {
+export const renderElement = (container, element, place = RenderPosition.beforeEnd) => {
   switch (place) {
     case RenderPosition.afterBegin:
       container.prepend(element);

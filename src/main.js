@@ -43,13 +43,13 @@ const renderCard = (siteTaskListElement, card) => {
     replaceFormToCard();
   });
 
-  renderElement(siteTaskListElement, cardComponent.getElement(), RenderPosition.beforeEnd);
+  renderElement(siteTaskListElement, cardComponent.getElement());
 };
 
-renderElement(siteHeaderElement, new MainMenuView().getElement(), RenderPosition.beforeEnd);
-renderElement(siteMainElement, new FilterView(filters).getElement(), RenderPosition.beforeEnd);
+renderElement(siteHeaderElement, new MainMenuView().getElement());
+renderElement(siteMainElement, new FilterView(filters).getElement());
 
-renderElement(siteMainElement, new BoardView().getElement(), RenderPosition.beforeEnd);
+renderElement(siteMainElement, new BoardView().getElement());
 
 const siteBoardElement = siteMainElement.querySelector(`.board`);
 
@@ -65,7 +65,7 @@ if (CARDS_NUMBER > 0) {
   if (cards.length > CARDS_COUNT_PER_STEP) {
     let renderedCardsCount = CARDS_COUNT_PER_STEP;
 
-    renderElement(siteBoardElement, new LoadButtonView().getElement(), RenderPosition.beforeEnd);
+    renderElement(siteBoardElement, new LoadButtonView().getElement());
 
     const loadButton = siteBoardElement.querySelector(`.load-more`);
 
@@ -73,7 +73,7 @@ if (CARDS_NUMBER > 0) {
       e.preventDefault();
       cards
         .slice(renderedCardsCount, renderedCardsCount + CARDS_COUNT_PER_STEP)
-        .forEach((card) => renderElement(siteTaskListElement, new CardView(card).getElement(), RenderPosition.beforeEnd));
+        .forEach((card) => renderElement(siteTaskListElement, new CardView(card).getElement()));
 
       renderedCardsCount += CARDS_COUNT_PER_STEP;
 
@@ -83,5 +83,5 @@ if (CARDS_NUMBER > 0) {
     });
   }
 } else {
-  renderElement(siteBoardElement, new EmptyListView().getElement(), RenderPosition.beforeEnd);
+  renderElement(siteBoardElement, new EmptyListView().getElement());
 }
