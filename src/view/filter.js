@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const createFilterItemTemplate = (filter, isChecked) => {
   const {title, count} = filter;
 
@@ -11,15 +13,34 @@ const createFilterItemTemplate = (filter, isChecked) => {
       ${count === 0 ? `disabled` : ``}
     />
     <label for="filter__${title}" class="filter__label">
-      ${title} <span class="filter__${title}-count">${count}</span></label
-    >`
+      ${title} <span class="filter__count">${count}</span>
+    </label>`
   );
 };
 
-export const createFilterTemplate = (filterItems) => {
-  return (
-    `<section class="main__filter filter container">
-      ${filterItems.map((filter, index) => createFilterItemTemplate(filter, index === 0)).join(``)}
-    </section>`
-  );
-};
+export default class FilterView {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return (
+      `<section class="main__filter filter container">
+        ${this._filters.map((filter, index) => createFilterItemTemplate(filter, index === 0)).join(``)}
+      </section>`
+    );
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

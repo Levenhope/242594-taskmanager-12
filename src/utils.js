@@ -1,5 +1,30 @@
-// Функция из интернета по генерации случайного числа из диапазона
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
+export const RenderPosition = {
+  afterBegin: `afterbegin`,
+  beforeEnd: `beforeend`
+};
+
+export const renderElement = (container, element, place = RenderPosition.beforeEnd) => {
+  switch (place) {
+    case RenderPosition.afterBegin:
+      container.prepend(element);
+      break;
+    case RenderPosition.beforeEnd:
+      container.append(element);
+      break;
+  }
+};
+
+export const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`); // 1
+  newElement.innerHTML = template; // 2
+
+  return newElement.firstChild; // 3
+};
+
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));

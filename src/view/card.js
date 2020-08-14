@@ -1,6 +1,7 @@
 import {humanizeTaskDueDate, isTaskExpired, isTaskRepeating} from "../utils.js";
+import {createElement} from "../utils";
 
-export const createCardTemplate = (card) => {
+const createCardTemplate = (card) => {
   const {color, description, dueDate, repeatingDays, isFavorite, isArchive} = card;
 
   return (
@@ -51,3 +52,26 @@ export const createCardTemplate = (card) => {
     </article>`
   );
 };
+
+export default class CardView {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createCardTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
