@@ -63,7 +63,9 @@ renderElement(siteMainElement, new BoardView().getElement());
 
 const siteBoardElement = siteMainElement.querySelector(`.board`);
 
-if (CARDS_NUMBER > 0) {
+if (cards.every((card) => card.isArchive)) {
+  renderElement(siteBoardElement, new EmptyListView().getElement());
+} else {
   renderElement(siteBoardElement, new CardsListView().getElement(), RenderPosition.afterBegin);
   renderElement(siteBoardElement, new SortView().getElement(), RenderPosition.afterBegin);
 
@@ -92,6 +94,4 @@ if (CARDS_NUMBER > 0) {
       }
     });
   }
-} else {
-  renderElement(siteBoardElement, new EmptyListView().getElement());
 }
