@@ -26,6 +26,14 @@ const renderCard = (siteTaskListElement, card) => {
   const cardComponent = new CardView(card);
   const editCardComponent = new EditCardView(card);
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   const replaceCardToForm = () => {
     siteTaskListElement.replaceChild(editCardComponent.getElement(), cardComponent.getElement());
   };
@@ -36,11 +44,13 @@ const renderCard = (siteTaskListElement, card) => {
 
   cardComponent.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, () => {
     replaceCardToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   editCardComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
     evt.preventDefault();
     replaceFormToCard();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   renderElement(siteTaskListElement, cardComponent.getElement());
