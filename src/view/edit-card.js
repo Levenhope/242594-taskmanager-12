@@ -1,10 +1,19 @@
-import {humanizeTaskDueDate, isTaskRepeating, createElement} from "../utils.js";
+import {humanizeTaskDueDate, isTaskRepeating} from "../utils/task.js";
+import AbstractView from "./abstract.js";
+import {BLANK_CARD} from "../const.js";
 
-const createEditCardTemplate = (card) => {
-  const {color, description, dueDate, repeatingDays} = card;
+export default class EditCardView extends AbstractView {
+  constructor(card) {
+    super();
+    this._card = card || BLANK_CARD;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+  }
 
-  return (
-    `<article class="card card--edit card--${color}">
+  getTemplate() {
+    const {color, description, dueDate, repeatingDays} = this._card;
+
+    return (
+      `<article class="card card--edit card--${color}">
       <form class="card__form" method="get">
         <div class="card__inner">
           <div class="card__color-bar">
@@ -175,28 +184,16 @@ const createEditCardTemplate = (card) => {
         </div>
       </form>
     </article>`
-  );
-};
-
-export default class EditCardView {
-  constructor(card) {
-    this._card = card;
-    this._element = null;
+    );
   }
 
-  getTemplate() {
-    return createEditCardTemplate(this._card);
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 }

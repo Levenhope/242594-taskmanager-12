@@ -1,5 +1,5 @@
 import {COLORS, DESCRIPTIONS, MAX_DAYS_GAP} from "../const.js";
-import {getRandomInteger} from "../utils.js";
+import {getRandomInteger} from "../utils/common.js";
 
 const generateDate = () => {
   const isDate = Boolean(getRandomInteger(0, 1));
