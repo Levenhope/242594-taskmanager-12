@@ -1,10 +1,6 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
-export default class MainMenuView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class MainMenuView extends AbstractView {
   getTemplate() {
     return (
       `<section class="control__btn-wrap">
@@ -32,17 +28,5 @@ export default class MainMenuView {
         <label for="control__statistic" class="control__label">STATISTICS</label>
       </section>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
