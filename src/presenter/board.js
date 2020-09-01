@@ -2,10 +2,10 @@ import BoardView from "../view/board.js";
 import SortView from "../view/sort.js";
 import CardsListView from "../view/cards-list.js";
 import EmptyListView from "../view/empty-list.js";
-import EditCardView from "../view/edit-card.js";
-import CardView from "../view/card.js";
+import {updateItem} from "../utils/common.js";
 import LoadButtonView from "../view/load-button.js";
-import {render, RenderPosition, replace, remove} from "../utils/render.js";
+import CardPresenter from "../presenter/card.js";
+import {render, RenderPosition, remove} from "../utils/render.js";
 
 const CARDS_COUNT_PER_STEP = 8;
 
@@ -19,9 +19,13 @@ export default class BoardPresenter {
     this._cardsListComponent = new CardsListView();
     this._emptyListComponent = new EmptyListView();
     this._loadButtonComponent = new LoadButtonView();
+    this._cardPresenter = {};
+
+    this._handleCardChange = this._handleCardChange.bind(this);
   }
   init(boardCards) {
     this._boardCards = boardCards.slice();
+    this._sourcedBoardCards = boardCards.slice();
 
     render(this._boardContainer, this._boardComponent);
     render(this._boardComponent, this._cardsListComponent);
@@ -34,28 +38,9 @@ export default class BoardPresenter {
   }
 
   _renderCard(card) {
-    const cardComponent = new CardView(card);
-    const editCardComponent = new EditCardView(card);
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replace(cardComponent, editCardComponent);
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    cardComponent.setEditClickHandler(() => {
-      replace(editCardComponent, cardComponent);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    editCardComponent.setFormSubmitHandler(() => {
-      replace(cardComponent, editCardComponent);
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(this._cardsListComponent, cardComponent);
+    const cardPresenter = new CardPresenter(this._cardsListComponent, this._handleCardChange);
+    cardPresenter.init(card);
+    this._cardPresenter[card.id] = cardPresenter;
   }
 
   _renderCards(from, to) {
@@ -90,5 +75,16 @@ export default class BoardPresenter {
         this._renderLoadMoreButton();
       }
     }
+  }
+
+  _clearBoard() {
+    Object.values(this._cardPresenter).forEach((presenter) => presenter.destroy());
+    this._cardPresenter = {};
+  }
+
+  _handleCardChange(updatedCard) {
+    this._boardCards = updateItem(this._boardCards, updatedCard);
+    this._sourcedBoardCards = updateItem(this._sourcedBoardCards, updatedCard);
+    this._cardPresenter[updatedCard.id].init(updatedCard);
   }
 }

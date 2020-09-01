@@ -1,6 +1,8 @@
 import {COLORS, DESCRIPTIONS, MAX_DAYS_GAP} from "../const.js";
 import {getRandomInteger} from "../utils/common.js";
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const generateDate = () => {
   const isDate = Boolean(getRandomInteger(0, 1));
 
@@ -45,6 +47,7 @@ export const generateCard = () => {
     };
 
   return {
+    id: generateId(),
     description,
     dueDate,
     repeatingDays,
