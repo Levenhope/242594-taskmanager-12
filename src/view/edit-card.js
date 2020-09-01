@@ -1,8 +1,8 @@
 import {humanizeTaskDueDate, isTaskRepeating} from "../utils/task.js";
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
 import {BLANK_CARD, COLORS} from "../const.js";
 
-export default class EditCardView extends AbstractView {
+export default class EditCardView extends SmartView {
   constructor(card = BLANK_CARD) {
     super();
     this._data = EditCardView.parseCardToData(card);
@@ -156,37 +156,6 @@ export default class EditCardView extends AbstractView {
     return data;
   }
 
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-    prevElement = null;
-
-    this.restoreHandlers();
-  }
-
   _dueDateToggleHandler(evt) {
     evt.preventDefault();
     this.updateData({
@@ -251,5 +220,11 @@ export default class EditCardView extends AbstractView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  reset(card) {
+    this.updateData(
+        EditCardView.parseCardToData(card)
+    );
   }
 }

@@ -1,3 +1,8 @@
+export const CARD_MODS = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
+
 export const COLORS = [
   `black`,
   `yellow`,

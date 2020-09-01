@@ -1,11 +1,13 @@
 import CardView from "../view/card.js";
 import EditCardView from "../view/edit-card.js";
 import {render, replace, remove} from "../utils/render.js";
+import {CARD_MODS} from "../const.js";
 
 export default class CardPresenter {
-    constructor(cardsListContainer, changeData) {
+    constructor(cardsListContainer, changeData, changeMode) {
         this._cardsListContainer = cardsListContainer;
         this._changeData = changeData;
+        this._changeMode = changeMode;
 
         this._cardComponent = null;
         this._editCardComponent = null;
@@ -25,6 +27,7 @@ export default class CardPresenter {
 
         this._cardComponent = new CardView(this._card);
         this._editCardComponent = new EditCardView(this._card);
+        this._mode = CARD_MODS.DEFAULT;
 
         this._cardComponent.setEditClickHandler(this._handleEditClick);
         this._editCardComponent.setFormSubmitHandler(this._handleFormSubmit);
@@ -36,11 +39,11 @@ export default class CardPresenter {
             return;
         }
 
-        if (this._cardsListContainer.getElement().contains(prevCardComponent.getElement())) {
+        if (this._mode === CARD_MODS.DEFAULT) {
             replace(this._cardComponent, prevCardComponent);
         }
 
-        if (this._cardsListContainer.getElement().contains(prevEditCardComponent.getElement())) {
+        if (this._mode === CARD_MODS.EDITING) {
             replace(this._editCardComponent, prevEditCardComponent);
         }
 
@@ -56,6 +59,7 @@ export default class CardPresenter {
     _escKeyDownHandler(evt) {
         if (evt.key === `Escape` || evt.key === `Esc`) {
             evt.preventDefault();
+            this._editCardComponent.reset(this._card);
             this._replaceFormToCard();
         }
     }
@@ -63,11 +67,14 @@ export default class CardPresenter {
     _replaceFormToCard(){
         replace(this._cardComponent, this._editCardComponent);
         document.removeEventListener(`keydown`, this._escKeyDownHandler);
+        this._mode = CARD_MODS.DEFAULT;
     }
 
     _replaceCardToForm(){
         replace(this._editCardComponent, this._cardComponent);
         document.addEventListener(`keydown`, this._escKeyDownHandler);
+        this._changeMode();
+        this._mode = CARD_MODS.EDITING;
     }
 
     _handleEditClick() {
@@ -101,5 +108,11 @@ export default class CardPresenter {
                 }
             )
         );
+    }
+
+    resetView() {
+        if (this._mode !== CARD_MODS.DEFAULT) {
+            this._replaceFormToCard();
+        }
     }
 }
