@@ -4,115 +4,99 @@ import {render, replace, remove} from "../utils/render.js";
 import {CARD_MODS} from "../const.js";
 
 export default class CardPresenter {
-    constructor(cardsListContainer, changeData, changeMode) {
-        this._cardsListContainer = cardsListContainer;
-        this._changeData = changeData;
-        this._changeMode = changeMode;
+  constructor(cardsListContainer, changeData, changeMode) {
+    this._cardsListContainer = cardsListContainer;
+    this._changeData = changeData;
+    this._changeMode = changeMode;
 
-        this._cardComponent = null;
-        this._editCardComponent = null;
+    this._cardComponent = null;
+    this._editCardComponent = null;
 
-        this._handleEditClick = this._handleEditClick.bind(this);
-        this._handleFormSubmit = this._handleFormSubmit.bind(this);
-        this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-        this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-        this._handleArchiveClick = this._handleArchiveClick.bind(this);
+    this._handleEditClick = this._handleEditClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleArchiveClick = this._handleArchiveClick.bind(this);
+  }
+
+  init(card) {
+    this._card = card;
+
+    const prevCardComponent = this._cardComponent;
+    const prevEditCardComponent = this._editCardComponent;
+
+    this._cardComponent = new CardView(this._card);
+    this._editCardComponent = new EditCardView(this._card);
+    this._mode = CARD_MODS.DEFAULT;
+
+    this._cardComponent.setEditClickHandler(this._handleEditClick);
+    this._editCardComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._cardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._cardComponent.setArchiveClickHandler(this._handleArchiveClick);
+
+    if (prevCardComponent === null || prevEditCardComponent === null) {
+      render(this._cardsListContainer, this._cardComponent);
+      return;
     }
 
-    init(card) {
-        this._card = card;
-
-        const prevCardComponent = this._cardComponent;
-        const prevEditCardComponent = this._editCardComponent;
-
-        this._cardComponent = new CardView(this._card);
-        this._editCardComponent = new EditCardView(this._card);
-        this._mode = CARD_MODS.DEFAULT;
-
-        this._cardComponent.setEditClickHandler(this._handleEditClick);
-        this._editCardComponent.setFormSubmitHandler(this._handleFormSubmit);
-        this._cardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-        this._cardComponent.setArchiveClickHandler(this._handleArchiveClick);
-
-        if (prevCardComponent === null || prevEditCardComponent === null) {
-            render(this._cardsListContainer, this._cardComponent);
-            return;
-        }
-
-        if (this._mode === CARD_MODS.DEFAULT) {
-            replace(this._cardComponent, prevCardComponent);
-        }
-
-        if (this._mode === CARD_MODS.EDITING) {
-            replace(this._editCardComponent, prevEditCardComponent);
-        }
-
-        remove(prevCardComponent);
-        remove(prevEditCardComponent);
+    if (this._mode === CARD_MODS.DEFAULT) {
+      replace(this._cardComponent, prevCardComponent);
     }
 
-    destroy() {
-        remove(this._cardComponent);
-        remove(this._editCardComponent);
+    if (this._mode === CARD_MODS.EDITING) {
+      replace(this._editCardComponent, prevEditCardComponent);
     }
 
-    _escKeyDownHandler(evt) {
-        if (evt.key === `Escape` || evt.key === `Esc`) {
-            evt.preventDefault();
-            this._editCardComponent.reset(this._card);
-            this._replaceFormToCard();
-        }
-    }
+    remove(prevCardComponent);
+    remove(prevEditCardComponent);
+  }
 
-    _replaceFormToCard(){
-        replace(this._cardComponent, this._editCardComponent);
-        document.removeEventListener(`keydown`, this._escKeyDownHandler);
-        this._mode = CARD_MODS.DEFAULT;
-    }
+  destroy() {
+    remove(this._cardComponent);
+    remove(this._editCardComponent);
+  }
 
-    _replaceCardToForm(){
-        replace(this._editCardComponent, this._cardComponent);
-        document.addEventListener(`keydown`, this._escKeyDownHandler);
-        this._changeMode();
-        this._mode = CARD_MODS.EDITING;
+  _escKeyDownHandler(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      this._editCardComponent.reset(this._card);
+      this._replaceFormToCard();
     }
+  }
 
-    _handleEditClick() {
-        this._replaceCardToForm();
-    }
+  _replaceFormToCard() {
+    replace(this._cardComponent, this._editCardComponent);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    this._mode = CARD_MODS.DEFAULT;
+  }
 
-    _handleFormSubmit(card) {
-        this._changeData(card);
-        this._replaceFormToCard();
-    }
+  _replaceCardToForm() {
+    replace(this._editCardComponent, this._cardComponent);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
+    this._changeMode();
+    this._mode = CARD_MODS.EDITING;
+  }
 
-    _handleFavoriteClick() {
-        this._changeData(
-            Object.assign(
-                {},
-                this._card,
-                {
-                    isFavorite: !this._card.isFavorite
-                }
-            )
-        );
-    }
+  _handleEditClick() {
+    this._replaceCardToForm();
+  }
 
-    _handleArchiveClick() {
-        this._changeData(
-            Object.assign(
-                {},
-                this._card,
-                {
-                    isArchive: !this._card.isArchive
-                }
-            )
-        );
-    }
+  _handleFormSubmit(card) {
+    this._changeData(card);
+    this._replaceFormToCard();
+  }
 
-    resetView() {
-        if (this._mode !== CARD_MODS.DEFAULT) {
-            this._replaceFormToCard();
-        }
+  _handleFavoriteClick() {
+    this._changeData(Object.assign({}, this._card, {isFavorite: !this._card.isFavorite}));
+  }
+
+  _handleArchiveClick() {
+    this._changeData(Object.assign({}, this._card, {isArchive: !this._card.isArchive}));
+  }
+
+  resetView() {
+    if (this._mode !== CARD_MODS.DEFAULT) {
+      this._replaceFormToCard();
     }
+  }
 }

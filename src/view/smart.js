@@ -1,43 +1,39 @@
 import AbstractView from "./abstract.js";
 
 export default class SmartView extends AbstractView {
-    constructor() {
-        super();
-        this._data = {};
+  constructor() {
+    super();
+    this._data = {};
+  }
+
+  updateData(update, justDataUpdating) {
+    if (!update) {
+      return;
     }
 
-    updateData(update, justDataUpdating) {
-        if (!update) {
-            return;
-        }
+    this._data = Object.assign({}, this._data, update);
 
-        this._data = Object.assign(
-            {},
-            this._data,
-            update
-        );
-
-        if (justDataUpdating) {
-            return;
-        }
-
-        this.updateElement();
+    if (justDataUpdating) {
+      return;
     }
 
-    updateElement() {
-        let prevElement = this.getElement();
-        const parent = prevElement.parentElement;
-        this.removeElement();
+    this.updateElement();
+  }
 
-        const newElement = this.getElement();
+  updateElement() {
+    let prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
 
-        parent.replaceChild(newElement, prevElement);
-        prevElement = null;
+    const newElement = this.getElement();
 
-        this.restoreHandlers();
-    }
+    parent.replaceChild(newElement, prevElement);
+    prevElement = null;
 
-    restoreHandlers() {
-        throw new Error(`Abstract method not implemented: resetHandlers`);
-    }
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    throw new Error(`Abstract method not implemented: resetHandlers`);
+  }
 }
