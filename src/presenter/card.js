@@ -1,7 +1,7 @@
 import CardView from "../view/card.js";
 import EditCardView from "../view/edit-card.js";
 import {render, replace, remove} from "../utils/render.js";
-import {CARD_MODS} from "../const.js";
+import {CARD_MODE} from "../const.js";
 
 export default class CardPresenter {
   constructor(cardsListContainer, changeData, changeMode) {
@@ -27,7 +27,7 @@ export default class CardPresenter {
 
     this._cardComponent = new CardView(this._card);
     this._editCardComponent = new EditCardView(this._card);
-    this._mode = CARD_MODS.DEFAULT;
+    this._mode = CARD_MODE.DEFAULT;
 
     this._cardComponent.setEditClickHandler(this._handleEditClick);
     this._editCardComponent.setFormSubmitHandler(this._handleFormSubmit);
@@ -39,11 +39,11 @@ export default class CardPresenter {
       return;
     }
 
-    if (this._mode === CARD_MODS.DEFAULT) {
+    if (this._mode === CARD_MODE.DEFAULT) {
       replace(this._cardComponent, prevCardComponent);
     }
 
-    if (this._mode === CARD_MODS.EDITING) {
+    if (this._mode === CARD_MODE.EDIT) {
       replace(this._editCardComponent, prevEditCardComponent);
     }
 
@@ -67,14 +67,14 @@ export default class CardPresenter {
   _replaceFormToCard() {
     replace(this._cardComponent, this._editCardComponent);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
-    this._mode = CARD_MODS.DEFAULT;
+    this._mode = CARD_MODE.DEFAULT;
   }
 
   _replaceCardToForm() {
     replace(this._editCardComponent, this._cardComponent);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
-    this._mode = CARD_MODS.EDITING;
+    this._mode = CARD_MODE.EDIT;
   }
 
   _handleEditClick() {
@@ -95,7 +95,7 @@ export default class CardPresenter {
   }
 
   resetView() {
-    if (this._mode !== CARD_MODS.DEFAULT) {
+    if (this._mode !== CARD_MODE.DEFAULT) {
       this._replaceFormToCard();
     }
   }

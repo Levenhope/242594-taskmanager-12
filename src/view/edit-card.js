@@ -13,6 +13,7 @@ export default class EditCardView extends SmartView {
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._repeatingChangeHandler = this._repeatingChangeHandler.bind(this);
     this._colorChangeHandler = this._colorChangeHandler.bind(this);
+    this._setElementHandler = this._setElementHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -182,9 +183,9 @@ export default class EditCardView extends SmartView {
   _repeatingChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      repeating: Object.assign(
+      repeatingDays: Object.assign(
           {},
-          this._data.repeating,
+          this._data.repeatingDays,
           {[evt.target.value]: evt.target.checked}
       )
     });
@@ -197,24 +198,19 @@ export default class EditCardView extends SmartView {
     });
   }
 
+  _setElementHandler(selector, eventType, handler) {
+    this.getElement().querySelector(selector).addEventListener(eventType, handler);
+  }
+
   _setInnerHandlers() {
-    this.getElement()
-        .querySelector(`.card__date-deadline-toggle`)
-        .addEventListener(`click`, this._dueDateToggleHandler);
-    this.getElement()
-        .querySelector(`.card__repeat-toggle`)
-        .addEventListener(`click`, this._repeatingToggleHandler);
-    this.getElement()
-        .querySelector(`.card__text`)
-        .addEventListener(`input`, this._descriptionInputHandler);
+    this._setElementHandler(`.card__date-deadline-toggle`, `click`, this._dueDateToggleHandler);
+    this._setElementHandler(`.card__repeat-toggle`, `click`, this._repeatingToggleHandler);
+    this._setElementHandler(`.card__text`, `input`, this._descriptionInputHandler);
+    this._setElementHandler(`.card__colors-wrap`, `change`, this._colorChangeHandler);
+
     if (this._data.isRepeating) {
-      this.getElement()
-          .querySelector(`.card__repeat-days-inner`)
-          .addEventListener(`change`, this._repeatingChangeHandler);
+      this._setElementHandler(`.card__repeat-days-inner`, `change`, this._repeatingChangeHandler);
     }
-    this.getElement()
-        .querySelector(`.card__colors-wrap`)
-        .addEventListener(`change`, this._colorChangeHandler);
   }
 
   restoreHandlers() {

@@ -1,6 +1,6 @@
-export const CARD_MODS = {
+export const CARD_MODE = {
   DEFAULT: `DEFAULT`,
-  EDITING: `EDITING`
+  EDIT: `EDIT`
 };
 
 export const COLORS = [
