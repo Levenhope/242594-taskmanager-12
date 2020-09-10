@@ -36,3 +36,9 @@ export const BLANK_CARD = {
   isArchive: false,
   isFavorite: false
 };
+
+export const SORT_TYPE = {
+  DEFAULT: `default`,
+  DATE_DOWN: `date-down`,
+  DATE_UP: `date-up`
+};
