@@ -2,12 +2,11 @@ import BoardView from "../view/board.js";
 import SortView from "../view/sort.js";
 import CardsListView from "../view/cards-list.js";
 import EmptyListView from "../view/empty-list.js";
-import {updateItem} from "../utils/common.js";
 import LoadButtonView from "../view/load-button.js";
 import CardPresenter from "../presenter/card.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {sortTaskUp, sortTaskDown} from "../utils/task.js";
-import {SORT_TYPE} from "../const.js";
+import {SORT_TYPE, UPDATE_TYPE, USER_ACTION} from "../const.js";
 
 const CARDS_COUNT_PER_STEP = 8;
 
@@ -18,16 +17,20 @@ export default class BoardPresenter {
 
     this._renderedCardsCount = CARDS_COUNT_PER_STEP;
     this._boardComponent = new BoardView();
-    this._sortComponent = new SortView();
+    this._sortComponent = null;
     this._cardsListComponent = new CardsListView();
     this._emptyListComponent = new EmptyListView();
-    this._loadButtonComponent = new LoadButtonView();
+    this._loadButtonComponent = null;
     this._cardPresenter = {};
     this._currentSortType = SORT_TYPE.DEFAULT;
 
-    this._handleCardChange = this._handleCardChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._cardsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -49,7 +52,7 @@ export default class BoardPresenter {
   }
 
   _renderCard(card) {
-    const cardPresenter = new CardPresenter(this._cardsListComponent, this._handleCardChange, this._handleModeChange);
+    const cardPresenter = new CardPresenter(this._cardsListComponent, this._handleViewAction, this._handleModeChange);
     cardPresenter.init(card);
     this._cardPresenter[card.id] = cardPresenter;
   }
@@ -65,7 +68,11 @@ export default class BoardPresenter {
   _renderLoadMoreButton() {
     const cardsCount = this._getTasks().length;
 
-    render(this._boardComponent, this._loadButtonComponent);
+    if (this._loadButtonComponent !== null) {
+      this._loadButtonComponent = null;
+    }
+
+    this._loadButtonComponent = new LoadButtonView();
 
     this._loadButtonComponent.setClickHandler(() => {
       const newRenderedCardsCount = Math.min(cardsCount, this._renderedCardsCount + CARDS_COUNT_PER_STEP);
@@ -78,19 +85,21 @@ export default class BoardPresenter {
         remove(this._loadButtonComponent);
       }
     });
+    render(this._boardComponent, this._loadButtonComponent);
   }
 
   _renderBoard() {
-    const cardsCount = this._getTasks().length;
-    const cards = this._getTasks().slice(0, Math.min(cardsCount, CARDS_COUNT_PER_STEP));
+    const cards = this._getTasks();
+    const cardsCount = cards.length;
 
-    if (this._getTasks().every((card) => card.isArchive)) {
+    if (cardsCount === 0) {
       this._renderEmptyList();
     } else {
       this._renderSort();
-      this._renderCards(cards);
 
-      if (cardsCount > CARDS_COUNT_PER_STEP) {
+      this._renderCards(cards.slice(0, Math.min(cardsCount, this._renderedCardsCount)));
+
+      if (cardsCount > this._renderedCardsCount) {
         this._renderLoadMoreButton();
       }
     }
@@ -102,8 +111,57 @@ export default class BoardPresenter {
     this._renderedCardsCount = CARDS_COUNT_PER_STEP;
   }
 
-  _handleCardChange(updatedCard) {
-    this._cardPresenter[updatedCard.id].init(updatedCard);
+  _clearStage({resetRenderedCardsCount = false, resetSortType = false} = {}) {
+    const cardsCount = this._getTasks().length;
+
+    Object
+      .values(this._cardPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._cardPresenter = {};
+
+    remove(this._sortComponent);
+    remove(this._emptyListComponent);
+    remove(this._loadButtonComponent);
+
+    if (resetRenderedCardsCount) {
+      this._renderedTaskCount = CARDS_COUNT_PER_STEP;
+    } else {
+      this._renderedTaskCount = Math.min(cardsCount, this._renderedTaskCount);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SORT_TYPE.DEFAULT;
+    }
+  }
+
+  _handleViewAction(actionType, updateType, update) {
+    switch (actionType) {
+      case USER_ACTION.UPDATE_CARD:
+        this._cardsModel.updateCard(updateType, update);
+        break;
+      case USER_ACTION.ADD_CARD:
+        this._cardsModel.addCard(updateType, update);
+        break;
+      case USER_ACTION.DELETE_CARD:
+        this._cardsModel.deleteCard(updateType, update);
+        break;
+    }
+  }
+
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UPDATE_TYPE.PATCH:
+        this._cardPresenter[data.id].init(data);
+        break;
+      case UPDATE_TYPE.MINOR:
+        this._clearStage();
+        this._renderBoard();
+        break;
+      case UPDATE_TYPE.MAJOR:
+        this._clearStage({resetRenderedCardsCount: true, resetSortType: true});
+        this._renderBoard();
+        break;
+    }
   }
 
   _handleModeChange() {
@@ -111,8 +169,14 @@ export default class BoardPresenter {
   }
 
   _renderSort() {
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
     render(this._boardComponent, this._sortComponent, RenderPosition.afterBegin);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._boardComponent, this._sortComponent, RenderPosition.afterBegin);
   }
 
   _handleSortTypeChange(sortType) {
@@ -121,7 +185,7 @@ export default class BoardPresenter {
     }
 
     this._currentSortType = sortType;
-    this._clearBoard();
+    this._clearStage({resetRenderedCardsCount: true});
     this._renderBoard();
   }
 }

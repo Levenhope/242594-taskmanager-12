@@ -42,3 +42,15 @@ export const SORT_TYPE = {
   DATE_DOWN: `date-down`,
   DATE_UP: `date-up`
 };
+
+export const USER_ACTION = {
+  UPDATE_CARD: `UPDATE_CARD`,
+  ADD_CARD: `ADD_CARD`,
+  DELETE_CARD: `DELETE_CARD`
+};
+
+export const UPDATE_TYPE = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};

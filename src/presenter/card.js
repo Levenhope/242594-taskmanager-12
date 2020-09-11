@@ -1,7 +1,7 @@
 import CardView from "../view/card.js";
 import EditCardView from "../view/edit-card.js";
 import {render, replace, remove} from "../utils/render.js";
-import {CARD_MODE} from "../const.js";
+import {CARD_MODE, USER_ACTION, UPDATE_TYPE} from "../const.js";
 
 export default class CardPresenter {
   constructor(cardsListContainer, changeData, changeMode) {
@@ -82,16 +82,28 @@ export default class CardPresenter {
   }
 
   _handleFormSubmit(card) {
-    this._changeData(card);
+    this._changeData(
+      USER_ACTION.UPDATE_TASK,
+      UPDATE_TYPE.MINOR,
+      card
+    );
     this._replaceFormToCard();
   }
 
   _handleFavoriteClick() {
-    this._changeData(Object.assign({}, this._card, {isFavorite: !this._card.isFavorite}));
+    this._changeData(
+      USER_ACTION.UPDATE_TASK,
+      UPDATE_TYPE.MINOR,
+      Object.assign({}, this._card, {isFavorite: !this._card.isFavorite})
+    );
   }
 
   _handleArchiveClick() {
-    this._changeData(Object.assign({}, this._card, {isArchive: !this._card.isArchive}));
+    this._changeData(
+      USER_ACTION.UPDATE_TASK,
+      UPDATE_TYPE.MINOR,
+      Object.assign({}, this._card, {isArchive: !this._card.isArchive})
+    );
   }
 
   resetView() {

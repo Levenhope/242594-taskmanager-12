@@ -161,7 +161,7 @@ export default class EditCardView extends SmartView {
     evt.preventDefault();
     this.updateData({
       isDueDate: !this._data.isDueDate,
-      isRepeating: !this._data.isDueDate && false
+      isRepeating: false
     });
   }
 
@@ -169,7 +169,7 @@ export default class EditCardView extends SmartView {
     evt.preventDefault();
     this.updateData({
       isRepeating: !this._data.isRepeating,
-      isDueDate: !this._data.isRepeating && false
+      isDueDate: false
     });
   }
 
